@@ -11,13 +11,16 @@ class ApiController extends Controller
     public function login(Request $request){
         $user = User::where('email',$request->email)->first();
 
-        if(!$user || !Hash::check($request->password, $user->password)){
-            return response()->json(['message' => 'invalid credentials']);
+        if(!$user||!Hash::check($request->password, $user->password)){
+            return response()->json(['message' => 'invalid credentials'],401);
+        }else{
+            $token = $user->createToken('api-token')->plainTextToken;
+            return response()->json([
+                'message' => 'logged in',
+                'token' => $token]);
         }
-
-        $token = $user->createToken('api-token')->plainTextToken;
-
-        return response()->json(['token' => $token]);
+        
+        return 0;
 
     }
 
@@ -34,11 +37,11 @@ class ApiController extends Controller
 
         $token = $user->createToken('api-token')->plainTextToken;
 
-        return response()->json([
-            'message' => 'account made',
-            "token" => $token]);
+        return response()->json(['message' => 'account made']);
     }
-
+   
+    
+    //get users count and all users
     public function index(){
         return [
             'total users'=>User::count(),
