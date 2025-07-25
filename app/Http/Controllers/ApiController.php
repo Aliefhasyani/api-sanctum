@@ -7,13 +7,17 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
 class ApiController extends Controller
-{
+{   
+    //login
     public function login(Request $request){
+        //gets the first email in db
         $user = User::where('email',$request->email)->first();
 
+        //check email and password
         if(!$user||!Hash::check($request->password, $user->password)){
             return response()->json(['message' => 'invalid credentials'],401);
         }else{
+            //assign token
             $token = $user->createToken('api-token')->plainTextToken;
             return response()->json([
                 'message' => 'logged in',
@@ -47,6 +51,16 @@ class ApiController extends Controller
             'total users'=>User::count(),
             'users'=>User::all(),
         ];
+    }
+
+    public function show(Request $request,$id){
+        $user = User::find($id);
+
+        if($user){
+            return response()->json(['user' => $user]);
+        }else{
+            return response()->json(['error' => 'invalid user']);
+        }
     }
 
 
