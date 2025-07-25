@@ -28,6 +28,7 @@ class ApiController extends Controller
 
     }
 
+    //register
     public function register(Request $request){
         $validated = $request->validate([
             'name' => 'string|max: 255|required',
@@ -53,6 +54,7 @@ class ApiController extends Controller
         ];
     }
 
+    //show specf user
     public function show(Request $request,$id){
         $user = User::find($id);
 
@@ -61,6 +63,29 @@ class ApiController extends Controller
         }else{
             return response()->json(['error' => 'invalid user']);
         }
+    }
+
+    //edit user 
+    public function update(Request $request,$id){
+        $user = User::find($id);
+
+        $data = $request->validate([
+            'name' => 'string|max: 255|required',
+            'email' => 'string|max: 255|required',
+            'password' => 'string|max: 255|required'
+        ]);
+
+        $data['password'] = Hash::make($data['password']);
+
+
+        if($user){
+            $user->update($data);
+            return response()->json(['message'=>'user updated']);
+        }else{
+            return response()->json(['message'=>'invalid user or credentials']);
+        }
+        
+        return 0;
     }
 
 

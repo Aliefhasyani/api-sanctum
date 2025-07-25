@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/login',[ApiController::class,'login']);
 Route::post('/register',[ApiController::class,'register']);
-Route::apiResource('user',ApiController::class);
+Route::apiResource('user',ApiController::class)->middleware('auth:sanctum');
 Route::apiResource('warship',WarshipApiController::class)->middleware('auth:sanctum');
 Route::apiResource('address',AddressController::class);
 
